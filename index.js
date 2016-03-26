@@ -9,8 +9,8 @@ var FloatingLabel = React.createClass({
     var initialOpacity = 0;
 
     if (this.props.visible) {
-      initialPadding = 5
-      initialOpacity = 1
+      initialPadding = 5;
+      initialOpacity = 1;
     }
 
     return {
@@ -71,25 +71,29 @@ var FloatLabelTextField = React.createClass({
     };
   },
 
-  withBorder: function() {
-    if (!this.props.noBorder) {
-      return styles.withBorder;
-    };
+  getAdditionalStyle: function(name) {
+    if (this.props.style && this.props.style[name])
+    {
+      return this.props.style[name];
+    }
+
+    return {};
   },
 
   render: function() {
     return(
-      <View style={styles.container}>
-        <View style={styles.viewContainer}>
-          <View style={styles.paddingView}></View>
-          <View style={[styles.fieldContainer, this.withBorder()]}>
+      <View style={[styles.container, this.getAdditionalStyle('container')]}>
+        <View style={[styles.viewContainer, this.getAdditionalStyle('viewContainer')]}>
+          <View style={[styles.fieldContainer, this.getAdditionalStyle('fieldContainer')]}>
             <FloatingLabel visible={this.state.text}>
-              <Text style={[styles.fieldLabel, this.labelStyle()]}>{this.placeHolderValue()}</Text>
+              <Text style={[styles.fieldLabel, 
+                            this.getAdditionalStyle('fieldLabel'), 
+                            this.labelStyle()]}>{this.placeHolderValue()}</Text>
             </FloatingLabel>
             <TextFieldHolder withValue={this.state.text}>
               <TextInput
                 placeholder={this.props.placeHolder}
-                style={[styles.valueText]}
+                style={[styles.valueText, this.getAdditionalStyle('valueText')]}
                 value={this.state.text}
                 onFocus={this.setFocus}
                 onBlur={this.unsetFocus}
@@ -123,7 +127,7 @@ var FloatLabelTextField = React.createClass({
 
   labelStyle: function() {
     if (this.state.focussed) {
-      return styles.focussed;
+      return  this.props.style && this.props.style.focussed ? this.props.style.focussed : styles.focussed;
     }
   },
 
@@ -153,15 +157,11 @@ var styles = StyleSheet.create({
   container: {
     flex: 1,
     height: 45,
-    backgroundColor: 'white',
     justifyContent: 'center'
   },
   viewContainer: {
     flex: 1,
     flexDirection: 'row'
-  },
-  paddingView: {
-    width: 15
   },
   floatingLabel: {
     position: 'absolute',
@@ -171,16 +171,17 @@ var styles = StyleSheet.create({
   fieldLabel: {
     height: 10,
     fontSize: 9,
-    color: '#B1B1B1'
+    color: '#B1B1B1',
+    paddingLeft: 15
   },
   fieldContainer: {
     flex: 1,
     justifyContent: 'center',
-    position: 'relative'
-  },
-  withBorder: {
+    position: 'relative',
     borderBottomWidth: 1 / 2,
     borderColor: '#C8C7CC',
+    backgroundColor: 'white',
+    paddingLeft: 15
   },
   valueText: {
     height: 20,
@@ -195,4 +196,4 @@ var styles = StyleSheet.create({
   }
 });
 
-module.exports = FloatLabelTextField
+module.exports = FloatLabelTextField;
