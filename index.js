@@ -92,14 +92,16 @@ var FloatLabelTextField = React.createClass({
             </FloatingLabel>
             <TextFieldHolder withValue={this.state.text}>
               <TextInput
-                placeholder={this.props.placeHolder}
+                placeholder={this.props.placeholder}
                 style={[styles.valueText, this.getAdditionalStyle('valueText')]}
                 value={this.state.text}
                 onFocus={this.setFocus}
                 onBlur={this.unsetFocus}
                 onChangeText={this.setText}
+                onChange={this.props.onChange}
                 secureTextEntry={this.props.secureTextEntry}
                 keyboardType={this.props.keyboardType}
+                autoCapitalize={this.props.autoCapitalize}
               />
             </TextFieldHolder>
           </View>
@@ -107,6 +109,7 @@ var FloatLabelTextField = React.createClass({
       </View>
     );
   },
+  
   setFocus: function() {
     this.setState({
       focussed: true
@@ -133,7 +136,7 @@ var FloatLabelTextField = React.createClass({
 
   placeHolderValue: function() {
     if (this.state.text) {
-      return this.props.placeHolder;
+      return this.props.placeholder;
     }
   },
 
