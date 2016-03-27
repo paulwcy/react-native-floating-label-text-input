@@ -71,6 +71,13 @@ var FloatLabelTextField = React.createClass({
     };
   },
 
+  componentWillReceiveProps: function(newProps) {
+    console.log('componentWillReceiveProps');
+    this.setState({
+      text: newProps.value
+    });
+  },
+
   getAdditionalStyle: function(name) {
     if (this.props.style && this.props.style[name])
     {
@@ -92,13 +99,13 @@ var FloatLabelTextField = React.createClass({
             </FloatingLabel>
             <TextFieldHolder withValue={this.state.text}>
               <TextInput
+                ref={textInput => this.textInput = textInput}
                 placeholder={this.props.placeholder}
                 style={[styles.valueText, this.getAdditionalStyle('valueText')]}
-                value={this.state.text}
+                value={this.props.value}
                 onFocus={this.setFocus}
                 onBlur={this.unsetFocus}
-                onChangeText={this.setText}
-                onChange={this.props.onChange}
+                onChange={this.onChange}
                 secureTextEntry={this.props.secureTextEntry}
                 keyboardType={this.props.keyboardType}
                 autoCapitalize={this.props.autoCapitalize}
@@ -141,17 +148,25 @@ var FloatLabelTextField = React.createClass({
   },
 
   setText: function(value) {
+    console.log(`SetText: ${value}`);
+
     this.setState({
       text: value
     });
-    try {
-      return this.props.onChangeTextValue(value);
-    } catch (_error) {}
+
+    this.textInput.refs.input.setNativeProps(value);
   },
 
-  withMargin: function() {
-    if (this.state.text) {
-      return styles.withMargin;
+  onChange: function(event) {
+    console.log(`onChange: ${event.nativeEvent.text}`);
+    this.setText(event.nativeEvent.text); 
+
+    if (this.props.onChangeText) {
+      this.props.onChangeText(event.nativeEvent.text);
+    }
+
+    if (this.props.onChange) {
+      this.props.onChange(event);
     }
   }
 });
@@ -190,9 +205,6 @@ var styles = StyleSheet.create({
     height: 20,
     fontSize: 16,
     color: '#111111'
-  },
-  withMargin: {
-    marginTop: 10
   },
   focussed: {
     color: "#1482fe"
